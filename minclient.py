@@ -17,7 +17,7 @@ SPLASH_STR = '''
 | $$ \/  | $$| $$| $$  | $$|  $$$$$$/| $$  | $$|  $$$$$$$  |  $$$$/
 |__/     |__/|__/|__/  |__/ \______/ |__/  |__/ \_______/   \___/  
                                                                    
-Version Alpha - TriaNaN Inc.
+MinClient - Version Alpha - TriaNaN Inc.
 --------------------------------------------------------------------------------
 '''
 
@@ -50,7 +50,11 @@ class Receive(threading.Thread):
 
     def run(self):
         while True:
-            message = self.skt.recv(1024)
+            try:
+                message = self.skt.recv(1024)
+            except:
+                print('A nonfatal error occured.')
+            
             if message:
                 print(f"\r{message.decode('ascii')}\n{self.name} > ", end='')
             else:
@@ -76,12 +80,11 @@ class Client:
 
         send = Send(self.skt, name)
         receive = Receive(self.skt, name)
-        send.start()
         receive.start()
 
         self.skt.sendall(f'SERVER: {name} joined the chatroom.'.encode('ascii'))
         print("\rYou are ready to chat. Quit the chatroom by typing QUIT.\n")
-        print(f'{name} > ', end='')
+        send.start()
 
 
 if __name__ == '__main__':

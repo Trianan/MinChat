@@ -6,6 +6,23 @@
 import threading, socket, argparse, os
 
 
+SPLASH_STR = '''
+
+
+ /$$      /$$ /$$            /$$$$$$  /$$                   /$$    
+| $$$    /$$$|__/           /$$__  $$| $$                  | $$    
+| $$$$  /$$$$ /$$ /$$$$$$$ | $$  \__/| $$$$$$$   /$$$$$$  /$$$$$$  
+| $$ $$/$$ $$| $$| $$__  $$| $$      | $$__  $$ |____  $$|_  $$_/  
+| $$  $$$| $$| $$| $$  \ $$| $$      | $$  \ $$  /$$$$$$$  | $$    
+| $$\  $ | $$| $$| $$  | $$| $$    $$| $$  | $$ /$$__  $$  | $$ /$$
+| $$ \/  | $$| $$| $$  | $$|  $$$$$$/| $$  | $$|  $$$$$$$  |  $$$$/
+|__/     |__/|__/|__/  |__/ \______/ |__/  |__/ \_______/   \___/  
+                                                                   
+MinServer - Version Alpha - TriaNaN Inc.
+--------------------------------------------------------------------------------
+'''
+
+
 class Server(threading.Thread):
     def __init__(self, host, port):
         super().__init__()
@@ -14,6 +31,7 @@ class Server(threading.Thread):
         self.port = port
     
     def run(self):
+        print(SPLASH_STR)
         skt = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         skt.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         skt.bind((self.host, self.port))
