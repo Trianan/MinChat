@@ -1,0 +1,37 @@
+                                  MINCHATTODO:
+--------------------------------------------------------------------------------
+Authors: Trianan, 
+Last modified: May 7 / 2023 by: Trianan
+
+
+BUGS:
+--------------------------------------------------------------------------------
+1. Fix duplicated '...left the chatroom.' messages upon client exit.
+
+2. Fix the various errors caused by client exit, which are currently
+    handled with try...except blocks which output an error message without
+    terminating the server program.
+
+
+FEATURES:
+--------------------------------------------------------------------------------
+1. Implement a session history that preserves the messages of a session,
+    which allows previous messages to be displayed to clients when they
+    join a server.
+
+2. Implement a user authentication system, 
+    with users and passwords being
+    stored on the server computer.
+
+3. Stylize the GUI interface, as it is currently styled by 
+    the OS default settings. Perhaps create a menu in the
+    GUI for styling it locally as the user wishes.
+
+4. Implement a 'Saved Servers' tab in the GUI which 
+    allows quick access to servers.
+
+5. Allow for an option to run the program in headless mode,
+    hiding the terminal window from view. Perhaps enable toggling
+    this from the GUI.
+
+6. Support emojis.
