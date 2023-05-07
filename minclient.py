@@ -36,7 +36,7 @@ class Send(threading.Thread):
             message = sys.stdin.readline()[:-1]
 
             if message == 'QUIT':
-                #self.skt.sendall(f'SERVER: {self.name} left the chatroom.'.encode('ascii'))
+                self.skt.sendall(f'SERVER: {self.name} left the chatroom.'.encode('ascii'))
                 break
             else:
                 self.skt.sendall(f'{self.name}: {message}'.encode('ascii'))
@@ -104,7 +104,7 @@ class Client:
         self.messages.insert(tk.END, f'{self.name}: {msg}')
 
         if msg == 'QUIT':
-            self.skt.sendall(f'SERVER: {self.name} left the chatroom.'.encode('ascii'))
+            #self.skt.sendall(f'SERVER: {self.name} left the chatroom.'.encode('ascii'))
             print('\nQuitting MinClient...')
             self.skt.close()
             os._exit(0)
