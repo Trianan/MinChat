@@ -69,7 +69,6 @@ class ServerSocket(threading.Thread):
                 message = self.sc.recv(1024).decode('ascii')
             except:
                 print("A client exited with not-fatal errors.")
-                
             if message:
                 print(('{!r}    {}').format(message, self.sockname))
                 self.server.broadcast(message, self.sockname)
@@ -80,7 +79,10 @@ class ServerSocket(threading.Thread):
                 return
     
     def send(self, message):
-        self.sc.sendall(message.encode('ascii'))
+        try:
+            self.sc.sendall(message.encode('ascii'))
+        except:
+            print(f'Could not send message:\n\t{message}\n\n')
 
 
 def exit(server):
