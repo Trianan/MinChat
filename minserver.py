@@ -58,7 +58,7 @@ class Server(threading.Thread):
             current_history = ''
             with open(HISTORY, 'r') as session_history:
                 current_history = session_history.readlines()
-                current_history = ''.join(current_history[2:-2].split('    '))
+                current_history = ''.join([ e.split('    ')[1] for e in current_history[2:-2]])
             server_skt.send(current_history)
 
             print(f'Ready to receive messages from {client_skt.getpeername()}')
