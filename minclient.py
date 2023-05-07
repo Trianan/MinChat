@@ -104,7 +104,7 @@ class Client:
         self.messages.insert(tk.END, f'{self.name}: {msg}')
 
         if msg == 'QUIT':
-            #self.skt.sendall(f'SERVER: {self.name} left the chatroom.'.encode('ascii'))
+            self.skt.sendall(f'SERVER: {self.name} left the chatroom.'.encode('ascii'))
             print('\nQuitting MinClient...')
             self.skt.close()
             os._exit(0)
@@ -135,7 +135,7 @@ def main(host, port):
     text_input = tk.Entry(master=frm_entry)
     text_input.pack(fill=tk.BOTH, expand=True)
     text_input.bind("<Return>", lambda x: client.send(text_input))
-    text_input.insert(0, "Your message here.")
+    #text_input.insert(0, "Your message here.")
 
     btn_send = tk.Button(
         master=window,
