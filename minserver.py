@@ -109,3 +109,7 @@ if __name__ == '__main__':
 
     exit = threading.Thread(target = exit, args = (server,))
     exit.start()
+
+# Heavy credit due to Zhang Zeyu, writer of the tutorial used to create the core of this
+# program. Link to tutorial here:
+# https://dev.to/zeyu2001/build-a-chatroom-app-with-python-44fa
