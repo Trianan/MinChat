@@ -65,7 +65,11 @@ class ServerSocket(threading.Thread):
 
     def run(self):
         while True:
-            message = self.sc.recv(1024).decode('ascii')
+            try:
+                message = self.sc.recv(1024).decode('ascii')
+            except:
+                print("A client exited with not-fatal errors.")
+                
             if message:
                 print(('{!r}    {}').format(message, self.sockname))
                 self.server.broadcast(message, self.sockname)
