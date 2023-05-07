@@ -64,7 +64,7 @@ class Receive(threading.Thread):
                 if self.messages:
                     if message.split('|')[0] == '_HIST_': # History keeps getting received as one line.
                         for msg in message.split('|')[1:-1]: # This is supposed to fix that.
-                            self.messages.insert(tk.END, msg)
+                            self.messages.insert(tk.END, msg + '\r')
                     else:
                         self.messages.insert(tk.END, message)
                 print(f"\r{message}\n{self.name} > ", end='')
