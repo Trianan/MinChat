@@ -7,6 +7,7 @@ Last modified: May 7 / 2023 by: Trianan
 BUGS:
 --------------------------------------------------------------------------------
 1. Fix duplicated '...left the chatroom.' messages upon client exit.
+    (This was fixed, and now it's back. :( )
 
 2. Fix the various errors caused by client exit, which are currently
     handled with try...except blocks which output an error message without
@@ -18,6 +19,8 @@ FEATURES:
 1. Implement a session history that preserves the messages of a session,
     which allows previous messages to be displayed to clients when they
     join a server.
+    ( This is currently implemented and working on MacOS, but does not render
+        history text to the GUI on Windows )
 
 2. Implement a user authentication system, 
     with users and passwords being
@@ -26,6 +29,7 @@ FEATURES:
 3. Stylize the GUI interface, as it is currently styled by 
     the OS default settings. Perhaps create a menu in the
     GUI for styling it locally as the user wishes.
+    ( Minor styling done )
 
 4. Implement a 'Saved Servers' tab in the GUI which 
     allows quick access to servers.
