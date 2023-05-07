@@ -121,7 +121,9 @@ def main(host, port):
     scrollbar = tk.Scrollbar(master=frm_messages)
     messages = tk.Listbox(
         master=frm_messages,
-        yscrollcommand=scrollbar.set
+        yscrollcommand=scrollbar.set,
+        fg='spring green',
+        bg='black'
     )
     scrollbar.pack(side=tk.RIGHT, fill=tk.Y, expand=False)
     messages.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
@@ -149,6 +151,8 @@ def main(host, port):
     window.rowconfigure(1, minsize=50, weight=0)
     window.columnconfigure(0, minsize=500, weight=1)
     window.columnconfigure(1, minsize=200, weight=0)
+
+    window.configure(background='black')
 
     window.mainloop()
 

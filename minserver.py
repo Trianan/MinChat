@@ -4,8 +4,9 @@
 # -----------------------------------------------------------------------------
 
 import threading, socket, argparse, os
+from datetime import datetime
 
-
+H_RULE = '-----------------------------------------------------------------------------------\n'
 SPLASH_STR = '''
 
 
@@ -20,7 +21,8 @@ SPLASH_STR = '''
 MinServer - Version Alpha - TriaNaN Inc.
 --------------------------------------------------------------------------------
 '''
-
+SESSION_START = datetime.today().isoformat()
+HISTORY = f"./.sessions/session_{SESSION_START}.txt"
 
 class Server(threading.Thread):
     def __init__(self, host, port):
@@ -31,6 +33,13 @@ class Server(threading.Thread):
     
     def run(self):
         print(SPLASH_STR)
+
+        with open(HISTORY, 'w') as session_history:
+            session_history.write(
+                f'MINCHAT SERVER LOGS - SESSION {SESSION_START} - IP: {self.host} PORT: {self.port}\n' +
+                H_RULE
+            )
+
         skt = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         skt.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         skt.bind((self.host, self.port))
@@ -41,9 +50,17 @@ class Server(threading.Thread):
             client_skt, client_addr = skt.accept()
             print(f'Accepted a new connection from {client_skt.getpeername()} to {client_skt.getsockname()}')
 
-            server_skt = ServerSocket(client_skt, client_addr, self) # To be defined.
+            server_skt = ServerSocket(client_skt, client_addr, self)
             server_skt.start()
             self.connections.append(server_skt)
+
+            # Send session history to client upon connection:
+            current_history = ''
+            with open(HISTORY, 'r') as session_history:
+                current_history = session_history.readlines()
+                current_history = ''.join(current_history[2:-2].split('    '))
+            server_skt.send(current_history)
+
             print(f'Ready to receive messages from {client_skt.getpeername()}')
     
     def broadcast(self, message, source):
@@ -71,6 +88,8 @@ class ServerSocket(threading.Thread):
             if message:
                 print(('{!r}    {}').format(message, self.sockname))
                 self.server.broadcast(message, self.sockname)
+                with open(HISTORY, 'a') as session_history:
+                    session_history.write(f'({datetime.today().isoformat()})    {message}\n')
             else:
                 print(f'{self.sockname} has closed their connection.')
                 self.sc.close()
@@ -92,6 +111,8 @@ def exit(server):
             for connection in server.connections:
                 connection.sc.close()
             print('Shutting down server...')
+            with open(HISTORY, 'a') as session_history:
+                session_history.write(H_RULE + '<<< END OF SESSION >>>\n')
             os._exit(0)
 
 
