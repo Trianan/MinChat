@@ -53,7 +53,7 @@ class Receive(threading.Thread):
             try:
                 message = self.skt.recv(1024)
             except:
-                self.skt.close()
+                #self.skt.close()
                 os._exit(1)
             
             if message:
