@@ -46,11 +46,11 @@ class Send(threading.Thread):
 
 
 class Receive(threading.Thread):
-    def __init__(self, skt, name):
+    def __init__(self, skt, name, msgbox=None):
         super().__init__()
         self.skt = skt
         self.name = name
-        self.messages = None
+        self.messages = msgbox
 
     def run(self):
         while True:
@@ -62,7 +62,11 @@ class Receive(threading.Thread):
             
             if message:
                 if self.messages:
-                    self.messages.insert(tk.END, message)
+                    if message.split('|')[0] == '_HIST_': # History keeps getting received as one line.
+                        for msg in message.split('|')[1:-1]: # This is supposed to fix that.
+                            self.messages.insert(tk.END, msg)
+                    else:
+                        self.messages.insert(tk.END, message)
                 print(f"\r{message}\n{self.name} > ", end='')
             else:
                 print('\nConnection to server lost; contact server admin.\nQuitting MinClient...')
@@ -71,12 +75,12 @@ class Receive(threading.Thread):
 
 
 class Client:
-    def __init__(self, host, port):
+    def __init__(self, host, port, msgbox=None):
         self.host = host
         self.port = port
         self.skt = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.name = None
-        self.messages = None
+        self.messages = msgbox
     
     def start(self):
         print(SPLASH_STR)
@@ -88,7 +92,7 @@ class Client:
         print('Getting ready to send and receive messages...')
 
         send = Send(self.skt, self.name)
-        receive = Receive(self.skt, self.name)
+        receive = Receive(self.skt, self.name, self.messages)
         receive.start()
 
         self.skt.sendall(f'SERVER: {self.name} joined the chatroom.'.encode('ascii'))
@@ -112,8 +116,6 @@ class Client:
 
 
 def main(host, port):
-    client = Client(host, port)
-    receive = client.start()
     window = tk.Tk()
     window.title('MinChat - minclient version alpha')
 
@@ -128,8 +130,12 @@ def main(host, port):
     scrollbar.pack(side=tk.RIGHT, fill=tk.Y, expand=False)
     messages.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-    client.messages = messages
-    receive.messages = messages
+    client = Client(host, port, messages)
+    #receive = 
+    client.start()
+
+    #client.messages = messages
+    #receive.messages = messages
 
     frm_messages.grid(row=0, column=0, columnspan=2, sticky='nsew')
     frm_entry = tk.Frame(master=window)

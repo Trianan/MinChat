@@ -1,0 +1,2 @@
+(2023-05-07T14:47:03.403076)    SERVER: B left the chatroom.
+(2023-05-07T14:47:17.675450)    SERVER: A left the chatroom.

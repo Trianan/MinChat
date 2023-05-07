@@ -3,7 +3,7 @@
 # By: Trianan
 # -----------------------------------------------------------------------------
 
-import threading, socket, argparse, os
+import threading, socket, argparse, os, time
 from datetime import datetime
 
 H_RULE = '-----------------------------------------------------------------------------------\n'
@@ -23,6 +23,15 @@ MinServer - Version Alpha - TriaNaN Inc.
 '''
 SESSION_START = datetime.today().isoformat()
 HISTORY = f"./.sessions/session_{SESSION_START}.txt"
+def get_current_history():
+    # Send session history to client upon connection:
+    current_history = []
+    with open(HISTORY, 'r') as session_history:
+        current_history = session_history.readlines()[2:]
+        current_history = [ line.split('    ')[1].replace('\n', '') for line in current_history]
+        current_history.insert(0, "_HIST_")
+    print(f'DEBUG: Current history:\n\n{current_history}\n\n')
+    return current_history
 
 class Server(threading.Thread):
     def __init__(self, host, port):
@@ -54,12 +63,10 @@ class Server(threading.Thread):
             server_skt.start()
             self.connections.append(server_skt)
 
-            # Send session history to client upon connection:
-            current_history = ''
-            with open(HISTORY, 'r') as session_history:
-                current_history = session_history.readlines()
-                current_history = ''.join([ e.split('    ')[1] for e in current_history[2:-2]])
-            server_skt.send(current_history)
+            print(f'Sending current history to {client_skt.getpeername()}...')
+            hist = get_current_history()
+            for line in hist:
+                server_skt.send(line + '|')
 
             print(f'Ready to receive messages from {client_skt.getpeername()}')
     
@@ -111,8 +118,6 @@ def exit(server):
             for connection in server.connections:
                 connection.sc.close()
             print('Shutting down server...')
-            with open(HISTORY, 'a') as session_history:
-                session_history.write(H_RULE + '<<< END OF SESSION >>>\n')
             os._exit(0)
 
 
