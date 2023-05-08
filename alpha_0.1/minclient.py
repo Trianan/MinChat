@@ -1,4 +1,4 @@
-# MINCHAT - MinClient - version alpha
+# MINCHAT - MinClient - version alpha_0.1
 # May 6 / 2023
 # By: Trianan
 # -----------------------------------------------------------------------------
@@ -17,7 +17,7 @@ SPLASH_STR = '''
 #+#       #+#     #+#     #+#   #+#+# #+#    #+# #+#    #+# #+#     #+#     #+#     
 ###       ### ########### ###    ####  ########  ###    ### ###     ###     ###     
                                                             
-MinClient - Version Alpha - TriaNaN Inc.
+MinClient - Version Alpha 0.1 - TriaNaN Inc.
 --------------------------------------------------------------------------------
 '''
 

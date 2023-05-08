@@ -1,4 +1,4 @@
-# MINCHAT - MinServer - version alpha
+# MINCHAT - MinServer - version alpha_0.1
 # May 6 / 2023
 # By: Trianan
 # -----------------------------------------------------------------------------
@@ -18,7 +18,7 @@ SPLASH_STR = '''
 #+#       #+#     #+#     #+#   #+#+# #+#    #+# #+#    #+# #+#     #+#     #+#     
 ###       ### ########### ###    ####  ########  ###    ### ###     ###     ###     
                                                              
-MinServer - Version Alpha - TriaNaN Inc.
+MinServer - Version Alpha 0.1 - TriaNaN Inc.
 --------------------------------------------------------------------------------
 '''
 SESSION_START = datetime.today().isoformat()
@@ -32,6 +32,7 @@ def get_current_history():
         current_history.insert(0, "_HIST_")
     print(f'DEBUG: Current history:\n\n{current_history}\n\n')
     return current_history
+
 
 class Server(threading.Thread):
     def __init__(self, host, port):
@@ -134,7 +135,3 @@ if __name__ == '__main__':
 
     exit = threading.Thread(target = exit, args = (server,))
     exit.start()
-
-# Heavy credit due to Zhang Zeyu, writer of the tutorial used to create the core of this
-# program. Link to tutorial here:
-# https://dev.to/zeyu2001/build-a-chatroom-app-with-python-44fa
