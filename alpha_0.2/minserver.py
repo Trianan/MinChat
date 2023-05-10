@@ -2,15 +2,16 @@
 
 # MODULES: ---------------------------------------------------------------------
 
-import threading, argparse, os
+import threading
+import os, sys, argparse
 import socket as skt
+import tkinter as tkr
 
 
 # GLOBAL CONSTANTS -------------------------------------------------------------
 
 ENCODING = 'ascii'
 DEFAULT_PORT = 1060
-
 SPLASH = '''
 +==+---------------------------------------------------------------------------+==+
 
@@ -78,11 +79,11 @@ class Server(threading.Thread):
             self.connections.append(connection_sock)
             print(f'CONNECTION READY: Ready to receive data from {client_sock.getpeername()}')
     
-    def post_message(self, message, source):
+    def post_msg(self, msg, source):
         '''Send message from client to all other connected clients.'''
         for connection in self.connections:
             if connection.client_addr != source:
-                connection.send(message)
+                connection.send(msg)
 
 
 # CONNECTION SOCKET ------------------------------------------------------------
@@ -101,11 +102,11 @@ class ConnectionSocket(threading.Thread):
         '''
         while True:
             # Blocks thread until data is received from client:
-            message = self.client_sock.recv(1024).decode(ENCODING)
-            if message:
-                print('MESSAGE RECEIVED: {} says...\n\t{!r}'.format(self.client_addr, message))
-                # Forward message to other clients:
-                self.server.broadcast(message, self.client_addr)
+            msg = self.client_sock.recv(1024).decode(ENCODING)
+            if msg:
+                print('MESSAGE RECEIVED: {} says...\n\t{!r}'.format(self.client_addr, msg))
+                # Forward msg to other clients:
+                self.server.post_msg(msg, self.client_addr)
             else:
                 # Client closed connection (recv returned ''); cleanup connection:
                 print(f'CONNECTION CLOSED: {self.client_addr} has closed their connection.')
@@ -113,11 +114,11 @@ class ConnectionSocket(threading.Thread):
                 self.server.remove_connection(self)
                 return # Exit thread.
             
-    def send(self, message):
+    def send(self, msg):
         '''
         Sends data to the connected client.
         '''
-        self.client_sock.sendall(message.encode(ENCODING)) # Sends all data in buffer.
+        self.client_sock.sendall(msg.encode(ENCODING)) # Sends all data in buffer.
 
 
 # COMMAND ----------------------------------------------------------------------
@@ -155,7 +156,7 @@ def command(server):
                 print(f"\t{connection.client_addr}")
 
 
- # -----------------------------------------------------------------------------
+ # MAIN ------------------------------------------------------------------------
 
 if __name__ == '__main__':
     # Create terminal interface and argument parser:
