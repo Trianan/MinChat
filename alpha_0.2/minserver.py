@@ -3,9 +3,8 @@
 # MODULES: ---------------------------------------------------------------------
 
 import threading
-import os, sys, argparse
+import os, argparse
 import socket as skt
-import tkinter as tkr
 
 
 # GLOBAL CONSTANTS -------------------------------------------------------------
@@ -85,6 +84,19 @@ class Server(threading.Thread):
             if connection.client_addr != source:
                 connection.send(msg)
 
+    def msg_client(self, msg, client_addr):
+        '''Sends a message from the server to an individual client'''
+        for connection in self.connections:
+            if connection.client_addr == client_addr:
+                connection.send(msg)
+                return
+        print('Could not message the given client.')
+        
+
+    def remove_connection(self, connection):
+        '''Remove client socket from connections.'''
+        self.connections.remove(connection)
+
 
 # CONNECTION SOCKET ------------------------------------------------------------
 
@@ -154,6 +166,16 @@ def command(server):
             )
             for connection in server.connections:
                 print(f"\t{connection.client_addr}")
+
+        elif cmd == 'm': # message client
+            print('COMMAND: message client (m)\n\tEnter client IP > ', end='')
+            client_ip = input()
+            client_port = int(input('Enter client port > '))
+            print(f'Enter your message to client {(client_ip, client_port)}\n\t > ', end='')
+            msg = 'SERVER: ' + input()
+            server.msg_client(msg, (client_ip, client_port))
+
+            
 
 
  # MAIN ------------------------------------------------------------------------

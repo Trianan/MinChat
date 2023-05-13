@@ -3,15 +3,21 @@
 Authors: Trianan, 
 Last modified: May 7 / 2023 by: Trianan
 
+*CURRENT PROGRAM VERSION: alpha_0.2
 
 BUGS:
 --------------------------------------------------------------------------------
-1. Fix duplicated '...left the chatroom.' messages upon client exit.
-    (This was fixed, and now it's back. :( )
+1: Nonfatal threading error upon client QUIT; program terminates, but outputs
+    ugly threading error to terminal.
 
-2. Fix the various errors caused by client exit, which are currently
-    handled with try...except blocks which output an error message without
-    terminating the server program.
+    Cause might be the OS terminating the program while the Receive thread is
+    runningm, so a solution may be to send the quit message to both Threads
+    and terminate both, then terminate the program once both have stopped
+    individually.
+
+2: Arguable bug: when the server quits, the message sent to users that contact
+    has been lost with the server is prepended with the client's username,
+    when perhaps it should be prepended with the server's username.
 
 
 FEATURES:
@@ -19,17 +25,24 @@ FEATURES:
 1. Implement a session history that preserves the messages of a session,
     which allows previous messages to be displayed to clients when they
     join a server.
-    ( This is currently implemented and working on MacOS, but does not render
-        history text to the GUI on Windows )
+    ( This is currently implemented and working in alpha_0.1 on MacOS, 
+    but does not render history text to the GUI on Windows )
 
 2. Implement a user authentication system, 
     with users and passwords being
-    stored on the server computer.
+    stored on the server computer. Allow guest
+    users to join, but allow features such as
+    'friends', 'saved-servers', etc. for
+    members with saved profiles.
+
+3. Implement server-side a reserved-usernames system that prevents clients from
+    giving themselves certain usernames, such as 'ADMIN' or 'SERVER' or other
+    active clients' usernames.
 
 3. Stylize the GUI interface, as it is currently styled by 
     the OS default settings. Perhaps create a menu in the
     GUI for styling it locally as the user wishes.
-    ( Minor styling done )
+    ( Minor styling done in alpha_0.1)
 
 4. Implement a 'Saved Servers' tab in the GUI which 
     allows quick access to servers.

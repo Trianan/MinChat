@@ -36,7 +36,7 @@ PROMPT = lambda n: print(f"{n} -> ", end='') # 'Username: message goes here'
 # SEND -------------------------------------------------------------------------
 
 class Send(threading.Thread):
-    '''Sends input from the client user to the server.'''
+    '''Sends input from the client terminal to the server.'''
 
     def __init__(self, socket, name):
         super().__init__()
@@ -53,14 +53,14 @@ class Send(threading.Thread):
 
             if msg == 'QUIT':
                 self.socket.sendall(f'SERVER: {self.name} has left the chatroom.'.encode(ENCODING))
-                break
+                print(EXIT_MSG)
+                self.socket.close() # Close connection with server and exit program.
+                os._exit(0)
             else:
                 # Send message to server for posting:
                 self.socket.sendall(f'{self.name}: {msg}'.encode(ENCODING))
         
-        print(EXIT_MSG)
-        self.socket.close() # Close connection with server and exit program.
-        os._exit(0)
+        
 
 
 # RECEIVE ----------------------------------------------------------------------
@@ -148,10 +148,10 @@ class Client:
         PROMPT(self.name)
         
         # For GUI integration:
-        return outbox
+        return inbox
     
 
-    def send(self, input_box):
+    def send(self, input_box): 
         '''Sends data from GUI text input box to the server.'''
 
         # Get text from input, clear input element, and append input to messages element.
@@ -170,11 +170,64 @@ class Client:
         # for votes or surveys initiated within the chatroom. -Trianan
         else:
             # Send message to server for posting:
-            self.socket.sendall(f'{self.name}: {msg.encode(ENCODING)}')
+            self.socket.sendall(f'{self.name}: {msg}'.encode(ENCODING))
+            print(f'{self.name}: {msg}')
 
     
 
 # MAIN -------------------------------------------------------------------------
+
+def main(host, port):
+    '''Initializes and runs GUI. Takes server IP and port as arguments.'''
+    # Initialize client and reference to receiving thread:
+    client = Client(host, port)
+    inbox = client.start()
+
+    # Create GUI window:
+    window = tkr.Tk()
+    window.title('.     .    .   .  . .. MinChat Client .. .  .   .    .     .')
+
+    # Initialize frame with scrollbar for viewing chatroom messages:
+    msg_frame = tkr.Frame(master=window)
+    scrollbar = tkr.Scrollbar(master=msg_frame)
+    msg_box = tkr.Listbox(
+        master=msg_frame,
+        yscrollcommand=scrollbar.set
+    )
+    scrollbar.pack(side=tkr.RIGHT, fill=tkr.Y, expand=False)
+    msg_box.pack(side=tkr.LEFT, fill=tkr.BOTH, expand=True)
+
+    # Assign GUI message frame to client's GUI outbox and inbox reference:
+    client.msg_box = msg_box
+    inbox.msg_box = msg_box
+
+    # Define messages spatial area, and a text input box:
+    msg_frame.grid(row=0, column=0, columnspan=2, sticky='nsew')
+    entry_frame = tkr.Frame(master=window)
+    input_box = tkr.Entry(master=entry_frame)
+    input_box.pack(fill=tkr.BOTH, expand=True)
+
+    # Bind ENTER key to sending text in input box to server:
+    input_box.bind("<Return>", lambda e: client.send(input_box))
+    # Define 'send' button for same purpose:
+    send_btn = tkr.Button(
+        master=window,
+        text='Post',
+        command=lambda: client.send(input_box)
+    )
+
+    # Define spatial areas for input box and send button:
+    entry_frame.grid(row=1, column=0, padx=10, sticky='ew')
+    send_btn.grid(row=1, column=1, padx=10, sticky='ew')
+
+    # Define where the elements will be positioned within the window:
+    window.rowconfigure(0, minsize=500, weight=1)
+    window.rowconfigure(1, minsize=50, weight=0)
+    window.columnconfigure(0, minsize=500, weight=1)
+    window.columnconfigure(1, minsize=200, weight=0)
+
+    window.mainloop()
+
 
 if __name__ == '__main__':
 
@@ -193,6 +246,5 @@ if __name__ == '__main__':
     # Get arguments from command line:
     args = arg_parser.parse_args()
 
-    # Create client with cmd arguments, and start it:
-    client = Client(args.host, args.p)
-    client.start()
+    # Start the client and GUI:
+    main(args.host, args.p)
