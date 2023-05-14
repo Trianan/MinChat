@@ -31,6 +31,9 @@ SPLASH = '''
 '''
 EXIT_MSG = 'Quitting MinChat client .. .  .   .    .     .      .       .'
 PROMPT = lambda n: print(f"{n} -> ", end='') # 'Username: message goes here'
+HIST = '!HIST!'
+HIST_RET = '!HIST_RETURN!'
+
 
 
 # SEND -------------------------------------------------------------------------
@@ -59,8 +62,6 @@ class Send(threading.Thread):
             else:
                 # Send message to server for posting:
                 self.socket.sendall(f'{self.name}: {msg}'.encode(ENCODING))
-        
-        
 
 
 # RECEIVE ----------------------------------------------------------------------
@@ -84,12 +85,21 @@ class Receive(threading.Thread):
             if msg:
                 if self.msg_box:
                     # GUI ready:
-                    print(f'\r{msg}')
-                    self.msg_box.insert(tkr.END, msg) # Append message to GUI container.
+                    if msg.split('|')[0].strip() == HIST_RET:
+                        for line in msg.split('|')[1:]:
+                            print(f'\r{line}')
+                            self.msg_box.insert(tkr.END, line) # Append message to GUI container.
+                    else:
+                        print(f'\r{msg}')
+                        self.msg_box.insert(tkr.END, msg) # Append message to GUI container.
                     PROMPT(self.name)
                 else:
                     # GUI not ready yet:
-                    print(f'\r{msg}')
+                    if msg.split('|')[0].strip() == HIST_RET:
+                        for line in msg.split('|')[1:]:
+                            print(f'\r{line}')
+                    else:
+                        print(f'\r{msg}')
                     PROMPT(self.name)
             else:
                 print('Connection lost with server:\n\tContact server admin.')
@@ -133,7 +143,7 @@ class Client:
         self.name = input('\n\nWho are you?\n---> ')
         print(
             f'\n\nWelcome {self.name}, to MinChat (server {self.host}:{self.port})!' +
-            'Initializing chat .. .  .   .    .     .       .'
+            '\n\nInitializing chat .. .  .   .    .     .       .'
         )
 
         # Create and start threads for sending and receiving messages from server:
@@ -141,6 +151,7 @@ class Client:
         inbox = Receive(self.socket, self.name)
         outbox.start()
         inbox.start()
+
 
         # Notify chatroom that new client has joined:
         self.socket.sendall(f'SERVER: {self.name} has entered the chatroom.'.encode(ENCODING))
@@ -157,7 +168,6 @@ class Client:
         # Get text from input, clear input element, and append input to messages element.
         msg = input_box.get() 
         input_box.delete(0, tkr.END)
-        self.msg_box.insert(tkr.END, f'{self.name}: {msg}')
 
         # Special commands:
         if msg == 'QUIT':
@@ -168,9 +178,12 @@ class Client:
         # More can be implemented through special server behaviour upon reception
         # of certain keywords. Perhaps special rendering could be provided
         # for votes or surveys initiated within the chatroom. -Trianan
+        elif msg == HIST:
+            self.socket.sendall(msg.encode(ENCODING))
         else:
             # Send message to server for posting:
             self.socket.sendall(f'{self.name}: {msg}'.encode(ENCODING))
+            self.msg_box.insert(tkr.END, f'{self.name}: {msg}')
             print(f'{self.name}: {msg}')
 
     
@@ -192,7 +205,9 @@ def main(host, port):
     scrollbar = tkr.Scrollbar(master=msg_frame)
     msg_box = tkr.Listbox(
         master=msg_frame,
-        yscrollcommand=scrollbar.set
+        yscrollcommand=scrollbar.set,
+        fg='spring green',
+        bg='black'
     )
     scrollbar.pack(side=tkr.RIGHT, fill=tkr.Y, expand=False)
     msg_box.pack(side=tkr.LEFT, fill=tkr.BOTH, expand=True)
@@ -226,7 +241,11 @@ def main(host, port):
     window.columnconfigure(0, minsize=500, weight=1)
     window.columnconfigure(1, minsize=200, weight=0)
 
-    window.mainloop()
+    window.configure(background='black')
+
+    input_box.insert(0, HIST)
+    client.send(input_box) # Client requests history once GUI initialized.
+    window.mainloop() # This blocks from here.
 
 
 if __name__ == '__main__':

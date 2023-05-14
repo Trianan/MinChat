@@ -10,8 +10,8 @@ BUGS:
 1: Nonfatal threading error upon client QUIT; program terminates, but outputs
     ugly threading error to terminal.
 
-    Cause might be the OS terminating the program while the Receive thread is
-    runningm, so a solution may be to send the quit message to both Threads
+    -Cause might be the OS terminating the program while the Receive thread is
+    running, so a solution may be to send the quit message to both Threads
     and terminate both, then terminate the program once both have stopped
     individually.
 
@@ -25,8 +25,11 @@ FEATURES:
 1. Implement a session history that preserves the messages of a session,
     which allows previous messages to be displayed to clients when they
     join a server.
-    ( This is currently implemented and working in alpha_0.1 on MacOS, 
-    but does not render history text to the GUI on Windows )
+
+    -This is currently implemented and working in alpha_0.1 on MacOS, 
+    but does not render history text to the GUI on Windows.
+    -This is currently implemented in alpha_0.2 and confirmed working
+    on MacOS; to be tested on different systems.
 
 2. Implement a user authentication system, 
     with users and passwords being
@@ -42,7 +45,9 @@ FEATURES:
 3. Stylize the GUI interface, as it is currently styled by 
     the OS default settings. Perhaps create a menu in the
     GUI for styling it locally as the user wishes.
-    ( Minor styling done in alpha_0.1)
+
+    -( Minor styling done in alpha_0.1)
+    -( Minor styling done in alpha_0.2)
 
 4. Implement a 'Saved Servers' tab in the GUI which 
     allows quick access to servers.

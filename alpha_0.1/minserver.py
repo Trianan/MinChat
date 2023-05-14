@@ -3,7 +3,7 @@
 # By: Trianan
 # -----------------------------------------------------------------------------
 
-import threading, socket, argparse, os, time
+import threading, socket, argparse, os
 from datetime import datetime
 
 H_RULE = '-----------------------------------------------------------------------------------\n'
