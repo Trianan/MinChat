@@ -23,9 +23,13 @@ BUGS:
     a new naming convention will have to be implemented in order to get the server
     to run cross-platform.
 
+4: Broken pipe error upon Windows client exit.
+
 
 FEATURES:
 --------------------------------------------------------------------------------
+0. Log errors to server log files.
+
 1. Implement a session history that preserves the messages of a session,
     which allows previous messages to be displayed to clients when they
     join a server.

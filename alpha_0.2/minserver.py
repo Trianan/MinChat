@@ -12,9 +12,9 @@ from datetime import datetime
 
 ENCODING = 'ascii'
 DEFAULT_PORT = 1060
-SESSION_START = datetime.today().isoformat()
-ADMIN_LOG = f"./.server_logs/session_{SESSION_START}_admin.txt"
-PUBLIC_LOG = f"./.server_logs/session_{SESSION_START}_client.txt"
+SESSION_START = datetime.today().isoformat().replace('T', '_').replace(':', '-')
+ADMIN_LOG = f"./session_{SESSION_START}_admin.txt"
+PUBLIC_LOG = f"./session_{SESSION_START}_client.txt"
 HIST = '!HIST!'
 HIST_RET = '!HIST_RETURN!'
 

@@ -1,0 +1,4 @@
+MinChat Administrator Log - Session Start: 2023-05-22_22-07-20.740042 - Server 10.0.0.95:1060
+-----------------------------------------------------------------------------------
+SERVER STARTED SUCCESSFULLY.
+LISTENING AT: ('10.0.0.95', 1060)
