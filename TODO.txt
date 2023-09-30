@@ -19,11 +19,7 @@ BUGS:
     has been lost with the server is prepended with the client's username,
     when perhaps it should be prepended with the server's username.
 
-3: Big bug: on Windows the filenames for the server logs contain invalid characters;
-    a new naming convention will have to be implemented in order to get the server
-    to run cross-platform.
-
-4: Broken pipe error upon Windows client exit.
+3: Broken pipe error upon Windows client exit.
 
 
 FEATURES:
